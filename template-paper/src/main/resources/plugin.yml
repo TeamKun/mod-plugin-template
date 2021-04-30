@@ -1,0 +1,7 @@
+name: Template
+version: @version@
+main: net.kunmc.lab.template.TemplatePlugin
+api-version: 1.16
+authors: [ kotx__, kun_lab ]
+description: plugin description here.
+website: https://www.kunmc.net

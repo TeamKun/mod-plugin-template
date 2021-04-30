@@ -1,0 +1,3 @@
+rootProject.name = 'Mod-Plugin-Template'
+
+include 'template-paper', 'template-forge'

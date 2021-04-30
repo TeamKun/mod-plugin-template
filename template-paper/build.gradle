@@ -1,0 +1,41 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+repositories {
+    maven {
+        name = 'papermc-repo'
+        url = 'https://papermc.io/repo/repository/maven-public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+dependencies {
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+shadowJar {
+    archiveName("plugin.jar")
+}
+
+task shadow {
+    group("kotx_build")
+    dependsOn(shadowJar)
+    doLast {
+        copy {
+            from shadowJar
+            into new File("${projectDir}/../output")
+        }
+    }
+}
