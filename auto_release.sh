@@ -18,7 +18,7 @@ if [ ! -e $TARGET_FILE ]; then
   fi
 fi
 
-GITHUB_TOKEN=${{ secrets.gh_token }}
+GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
 REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
 
@@ -30,7 +30,7 @@ ABSTRACT_REMOTE_VERSION=$(semanticVersionToAbstractValue $REMOTE_LATEST_VERSION)
 
 if [ $ABSTRACT_PROJECT_VERSION -gt $ABSTRACT_REMOTE_VERSION ]; then
 
-  sh ./gradlew shadow
+  sh ./gradle shadow
 
   RELEASE_ID=$(curl --request POST \
     --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" \
