@@ -29,15 +29,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: ACTIONS_ALLOW_UNSECURE_COMMAND=true
-
-      - run: echo ::set-env name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
-        shell: bash
-
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: "./output/**"
-          name: ${{ env.REPOSITORY_NAME }}
