@@ -1,0 +1,14 @@
+name: Auto Release
+on:
+  push:
+    branches:
+      - master
+jobs:
+  check_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Gradle auto release
+        uses: Kotlin-chan/gradle-auto-release@0.0.1
+        with:
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
