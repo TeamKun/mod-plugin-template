@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/bash -l
 
 semanticVersionToAbstractValue() {
   VER=$1
@@ -18,7 +18,7 @@ if [ ! -e $TARGET_FILE ]; then
   fi
 fi
 
-GITHUB_TOKEN=${{ inputs.gh_token }}
+GITHUB_TOKEN=${{ secrets.gh_token }}
 
 REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
 
