@@ -22,7 +22,7 @@ createRelease() {
     \"tag_name\": \"$PROJECT_VERSION\",
     \"draft\": false,
     \"prerelease\": false
-  }" | grep '"id":' | sed -E 's/.*"([^"]+)".*/\1/')
+  }" | grep '"id":' | sed -E 's/.*([0-9]+).*/\1/')
 
   echo "Release ID: $RELEASE_ID https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets"
 
