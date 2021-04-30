@@ -65,4 +65,6 @@ if [ -z $REMOTE_LATEST_VERSION ]; then
   createRelease
 elif [ $ABSTRACT_PROJECT_VERSION -gt $ABSTRACT_REMOTE_VERSION ]; then
   createRelease
+else
+  exit
 fi
