@@ -11,33 +11,33 @@ semanticVersionToAbstractValue() {
 
 createRelease() {
   sh ./gradlew shadow
-#  curl --request POST \
-#    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" \
-#    --header "authorization: Bearer $GITHUB_TOKEN" \
-#    --header "accept: application/vnd.github.v3+json" \
-#    --header "content-type: application/json" \
-#    --data "{
-#      \"name\": \"$REPOSITORY_NAME\",
-#      \"tag_name\": \"$PROJECT_VERSION\",
-#      \"draft\": false,
-#      \"prerelease\": false
-#    }"
-#
-#  RELEASE_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | grep '"id":' | sed -E 's/.*([0-9]+).*/\1/')
-#
-#  curl --request POST \
-#    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$REPOSITORY_NAME-mod-$PROJECT_VERSION.jar" \
-#    --header "authorization: Bearer $GITHUB_TOKEN" \
-#    --header "accept: application/vnd.github.v3+json" \
-#    --header "content-type: application/java-archiver" \
-#    --data-binary @"./output/mod.jar"
-#
-#  curl --request POST \
-#    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$REPOSITORY_NAME-plugin-$PROJECT_VERSION.jar" \
-#    --header "authorization: Bearer $GITHUB_TOKEN" \
-#    --header "accept: application/vnd.github.v3+json" \
-#    --header "content-type: application/java-archiver" \
-#    --data-binary @"./output/plugin.jar"
+  #  curl --request POST \
+  #    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" \
+  #    --header "authorization: Bearer $GITHUB_TOKEN" \
+  #    --header "accept: application/vnd.github.v3+json" \
+  #    --header "content-type: application/json" \
+  #    --data "{
+  #      \"name\": \"$REPOSITORY_NAME\",
+  #      \"tag_name\": \"$PROJECT_VERSION\",
+  #      \"draft\": false,
+  #      \"prerelease\": false
+  #    }"
+  #
+  #  RELEASE_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | grep '"id":' | sed -E 's/.*([0-9]+).*/\1/')
+  #
+  #  curl --request POST \
+  #    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$REPOSITORY_NAME-mod-$PROJECT_VERSION.jar" \
+  #    --header "authorization: Bearer $GITHUB_TOKEN" \
+  #    --header "accept: application/vnd.github.v3+json" \
+  #    --header "content-type: application/java-archiver" \
+  #    --data-binary @"./output/mod.jar"
+  #
+  #  curl --request POST \
+  #    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$REPOSITORY_NAME-plugin-$PROJECT_VERSION.jar" \
+  #    --header "authorization: Bearer $GITHUB_TOKEN" \
+  #    --header "accept: application/vnd.github.v3+json" \
+  #    --header "content-type: application/java-archiver" \
+  #    --data-binary @"./output/plugin.jar"
 }
 
 TARGET_FILE="./build.gradle"
