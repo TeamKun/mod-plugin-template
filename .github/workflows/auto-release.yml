@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Gradle auto release
-        uses: Kotlin-chan/gradle-auto-release@0.0.1
+        uses: Kotlin-chan/gradle-auto-release@0.0.2
         with:
           gh_token: ${{ secrets.GITHUB_TOKEN }}
