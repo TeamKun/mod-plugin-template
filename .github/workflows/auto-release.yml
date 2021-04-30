@@ -35,4 +35,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: "./output/**"
-          tag_name: $PROJECT_VERSION
+          tag_name: $ {{ env.PROJECT_VERSION }}
