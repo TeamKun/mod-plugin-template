@@ -24,7 +24,18 @@ jobs:
       - name: Add permission to auto_release scripts.
         run: chmod +x ./auto_release.sh
 
-      - name: Gradle auto release
+      - name: Gradle
         run: ./auto_release.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: echo ::set-env name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
+        shell: bash
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: "./output/**"
+          name: ${{ env.REPOSITORY_NAME }}
