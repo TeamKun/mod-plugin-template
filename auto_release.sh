@@ -28,9 +28,13 @@ REMOTE_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/$GITHUB_REPO
 ABSTRACT_PROJECT_VERSION=$(semanticVersionToAbstractValue $PROJECT_VERSION)
 ABSTRACT_REMOTE_VERSION=$(semanticVersionToAbstractValue $REMOTE_LATEST_VERSION)
 
+echo Repository: $REPOSITORY_NAME
+echo Project Version: $PROJECT_VERSION :$ABSTRACT_PROJECT_VERSION
+echo Release Version: REMOTE_LATEST_VERSION :$ABSTRACT_REMOTE_VERSION
+
 if [ $ABSTRACT_PROJECT_VERSION -gt $ABSTRACT_REMOTE_VERSION ]; then
 
-  sh ./gradle shadow
+  sh ./gradlew shadow
 
   RELEASE_ID=$(curl --request POST \
     --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" \
@@ -43,6 +47,8 @@ if [ $ABSTRACT_PROJECT_VERSION -gt $ABSTRACT_REMOTE_VERSION ]; then
     \"draft\": false,
     \"prerelease\": false
   }" | grep '"id":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+  echo Release ID: $RELEASE_ID
 
   curl --request POST \
     --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$REPOSITORY_NAME-mod-v$PROJECT_VERSION&label=$REPOSITORY_NAME-mod-v$PROJECT_VERSION" \
