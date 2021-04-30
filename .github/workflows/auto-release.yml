@@ -12,4 +12,4 @@ jobs:
         run: chmod +x ./auto_release.sh
 
       - name: Gradle auto release
-        run: sh ./auto_release.sh
+        run: ./auto_release.sh
