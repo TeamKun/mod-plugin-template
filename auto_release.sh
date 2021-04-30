@@ -9,29 +9,7 @@ semanticVersionToAbstractValue() {
   echo $(($MAJOR * 100 + $MINOR * 10 + $PATCH))
 }
 
-TARGET_FILE="./build.gradle"
-if [ ! -e $TARGET_FILE ]; then
-  TARGET_FILE="./build.gradle.kts"
-  if [ ! -e $TARGET_FILE ]; then
-    echo "Gradle configuration file not found!"
-    exit
-  fi
-fi
-
-REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
-
-PROJECT_VERSION=$(cat $TARGET_FILE | grep -m 1 "version = " | awk 'match($0, /version = "(.+)"/, groups) { print groups[1] }')
-REMOTE_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-
-ABSTRACT_PROJECT_VERSION=$(semanticVersionToAbstractValue $PROJECT_VERSION)
-ABSTRACT_REMOTE_VERSION=$(semanticVersionToAbstractValue $REMOTE_LATEST_VERSION)
-
-echo "Repository: $REPOSITORY_NAME"
-echo "Project Version: $PROJECT_VERSION :$ABSTRACT_PROJECT_VERSION"
-echo "Release Version: $REMOTE_LATEST_VERSION :$ABSTRACT_REMOTE_VERSION"
-
-if [ $ABSTRACT_PROJECT_VERSION -gt $ABSTRACT_REMOTE_VERSION ]; then
-
+createRelease() {
   sh ./gradlew shadow
 
   RELEASE_ID=$(curl --request POST \
@@ -61,4 +39,31 @@ if [ $ABSTRACT_PROJECT_VERSION -gt $ABSTRACT_REMOTE_VERSION ]; then
     --header "accept: application/vnd.github.v3+json" \
     --header "content-type: application/java-archiver" \
     --data-binary @"./output/plugin.jar"
+}
+
+TARGET_FILE="./build.gradle"
+if [ ! -e $TARGET_FILE ]; then
+  TARGET_FILE="./build.gradle.kts"
+  if [ ! -e $TARGET_FILE ]; then
+    echo "Gradle configuration file not found!"
+    exit
+  fi
+fi
+
+REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
+
+PROJECT_VERSION=$(cat $TARGET_FILE | grep -m 1 "version = " | awk 'match($0, /version = "(.+)"/, groups) { print groups[1] }')
+REMOTE_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+ABSTRACT_PROJECT_VERSION=$(semanticVersionToAbstractValue $PROJECT_VERSION)
+ABSTRACT_REMOTE_VERSION=$(semanticVersionToAbstractValue $REMOTE_LATEST_VERSION)
+
+echo "Repository: $REPOSITORY_NAME"
+echo "Project Version: $PROJECT_VERSION :$ABSTRACT_PROJECT_VERSION"
+echo "Release Version: $REMOTE_LATEST_VERSION :$ABSTRACT_REMOTE_VERSION"
+
+if [ -z $REMOTE_LATEST_VERSION ]; then
+  createRelease
+elif [ $ABSTRACT_PROJECT_VERSION -gt $ABSTRACT_REMOTE_VERSION ]; then
+  createRelease
 fi
