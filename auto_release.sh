@@ -12,19 +12,19 @@ semanticVersionToAbstractValue() {
 createRelease() {
   sh ./gradlew shadow
 
-  RELEASE_ID=$(curl --request POST \
+  curl --request POST \
     --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" \
     --header "authorization: Bearer $GITHUB_TOKEN" \
     --header "accept: application/vnd.github.v3+json" \
     --header "content-type: application/json" \
     --data "{
-    \"name\": \"$REPOSITORY_NAME\",
-    \"tag_name\": \"$PROJECT_VERSION\",
-    \"draft\": false,
-    \"prerelease\": false
-  }" | grep '"id":' | sed -E 's/.*([0-9]+).*/\1/')
+      \"name\": \"$REPOSITORY_NAME\",
+      \"tag_name\": \"$PROJECT_VERSION\",
+      \"draft\": false,
+      \"prerelease\": false
+    }"
 
-  echo "Release ID: $RELEASE_ID https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets"
+  RELEASE_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | grep '"id":' | sed -E 's/.*([0-9]+).*/\1/')
 
   curl --request POST \
     --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=mod-v$PROJECT_VERSION&label=mod-v$PROJECT_VERSION" \
