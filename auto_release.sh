@@ -27,14 +27,14 @@ createRelease() {
   RELEASE_ID=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | grep '"id":' | sed -E 's/.*([0-9]+).*/\1/')
 
   curl --request POST \
-    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=mod-v$PROJECT_VERSION&label=mod-v$PROJECT_VERSION" \
+    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$REPOSITORY_NAME-mod-$PROJECT_VERSION.jar" \
     --header "authorization: Bearer $GITHUB_TOKEN" \
     --header "accept: application/vnd.github.v3+json" \
     --header "content-type: application/java-archiver" \
     --data-binary @"./output/mod.jar"
 
   curl --request POST \
-    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=plugin-v$PROJECT_VERSION&label=plugin-v$PROJECT_VERSION" \
+    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$REPOSITORY_NAME-plugin-$PROJECT_VERSION.jar" \
     --header "authorization: Bearer $GITHUB_TOKEN" \
     --header "accept: application/vnd.github.v3+json" \
     --header "content-type: application/java-archiver" \
