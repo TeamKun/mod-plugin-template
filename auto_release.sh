@@ -11,6 +11,7 @@ semanticVersionToAbstractValue() {
 
 createRelease() {
   sh ./gradlew shadow
+  echo "RELEASE_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
   #  curl --request POST \
   #    --url "https://api.github.com/repos/$GITHUB_REPOSITORY/releases" \
   #    --header "authorization: Bearer $GITHUB_TOKEN" \
