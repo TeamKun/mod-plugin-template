@@ -23,3 +23,5 @@ jobs:
 
       - name: Gradle auto release
         run: ./auto_release.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

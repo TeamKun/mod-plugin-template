@@ -18,7 +18,6 @@ if [ ! -e $TARGET_FILE ]; then
   fi
 fi
 
-GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
 REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
 
