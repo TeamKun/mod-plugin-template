@@ -1,0 +1,117 @@
+buildscript {
+    ext.kotlin_version = '1.4.32'
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: "kotlin"
+apply plugin: 'net.minecraftforge.gradle'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+    mappings channel: 'snapshot', version: '20210309-1.16.5'
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                chatControl {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                chatControl {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'chat-control', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                chatControl {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
+    embed group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.4.32"
+    embed group: "org.jetbrains.kotlin", name: "kotlin-stdlib-jdk8", version: "1.4.32"
+    embed group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: "1.4.32"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "chat-control",
+                "Specification-Vendor"    : "kotx__, kun_lab",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.version,
+                "Implementation-Vendor"   : "kotx__, kun_lab",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+
+    archiveName("${project.name}-mod-${project.version}.jar")
+
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+task shadow {
+    group("kotx_build")
+    dependsOn(jar)
+    doLast {
+        copy {
+            from jar
+            into new File("${projectDir}/../output")
+        }
+    }
+}
+
+jar.finalizedBy('reobfJar')
+repositories {
+    mavenCentral()
+}
