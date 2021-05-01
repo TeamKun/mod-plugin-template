@@ -1,0 +1,130 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id "com.github.johnrengelman.shadow"
+    id "de.undercouch.download" version "4.1.1"
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+}
+
+repositories {
+    maven {
+        name = "papermc-repo"
+        url = "https://papermc.io/repo/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+
+    implementation group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.4.32"
+    implementation group: "org.jetbrains.kotlin", name: "kotlin-stdlib-jdk8", version: "1.4.32"
+    implementation group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: "1.4.32"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter(
+                ReplaceTokens,
+                tokens: [
+                        'version': project.version,
+                ]
+        )
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+shadowJar {
+    archiveName("${project.name}-plugin-${project.version}.jar")
+}
+
+task shadow {
+    group("kotx_build")
+    dependsOn(shadowJar)
+    doLast {
+        copy {
+            from shadowJar
+            into new File("${projectDir}/../output")
+        }
+    }
+}
+
+task runPaperServer {
+    group("kotx_build")
+    dependsOn(shadowJar)
+    doLast {
+        def serverDir = new File("${projectDir}/../server")
+        def pluginsDir = new File(serverDir, "plugins")
+
+        if (!serverDir.exists())
+            serverDir.mkdirs()
+
+        if (!pluginsDir.exists())
+            pluginsDir.mkdirs()
+
+        copy {
+            from shadowJar
+            into new File("${projectDir}/../server/plugins")
+        }
+
+        javaexec {
+            workingDir serverDir
+            main "-jar"
+            args = ["paper.jar", "nogui"]
+        }
+    }
+}
+
+task environment {
+    group("kotx_build")
+    doLast {
+        def serverDir = new File("${projectDir}/../server")
+        def paperJarFile = new File(serverDir, "paper.jar")
+
+        if (!serverDir.exists())
+            serverDir.mkdirs()
+
+        download {
+            src "https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/637/downloads/paper-1.16.5-637.jar"
+            dest paperJarFile
+        }
+
+        javaexec {
+            workingDir serverDir
+            main "-jar"
+            args = ["paper.jar", "nogui"]
+        }
+
+        def eulaFile = new File(serverDir, "eula.txt")
+        eulaFile.write(eulaFile.readLines().join("\n").replace("eula=false", "eula=true"))
+
+        def propertiesFile = new File(serverDir, "server.properties")
+        propertiesFile.write(propertiesFile.readLines().join("\n")
+                .replace("online-mode=true", "online-mode=false")
+                .replace("difficulty=easy", "difficulty=peaceful")
+                .replace("spawn-protection=16", "spawn-protection=0")
+                .replace("gamemode=survival", "gamemode=creative")
+                .replace("level-name=world", "level-name=dev_world")
+                .replace("level-type=default", "level-type=flat")
+                .replace("motd=A Minecraft Server", "motd=Kotx Development Server")
+                .replace("max-tick-time=60000", "max-tick-time=-1")
+                .replace("enable-command-block=false", "enable-command-block=true")
+                .replace("view-distance=10", "view-distance=16")
+        )
+    }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
