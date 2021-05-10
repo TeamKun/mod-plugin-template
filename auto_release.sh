@@ -1,5 +1,10 @@
 #!/bin/bash -l
 
+#
+# Copyright (c) 2021 kotx__.
+# Twitter: https://twitter.com/kotx__
+#
+
 semanticVersionToAbstractValue() {
   MAJOR1=$(echo $1 | awk 'match($0, /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/, groups) { print groups[1] }')
   MINOR1=$(echo $1 | awk 'match($0, /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/, groups) { print groups[2] }')
@@ -8,19 +13,19 @@ semanticVersionToAbstractValue() {
   MINOR2=$(echo $2 | awk 'match($0, /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/, groups) { print groups[2] }')
   PATCH2=$(echo $2 | awk 'match($0, /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/, groups) { print groups[3] }')
 
-  if [ $MAJOR1 -lt $MAJOR2 ]; then
-    echo false
-  elif [ $MINOR1 -lt $MINOR2 ]; then
-    echo false
-  elif [ $PATCH1 -lt $PATCH2 ]; then
-    echo false
-  else
+  if [ $MAJOR1 -gt $MAJOR2 ]; then
     echo true
+  elif [ $MINOR1 -gt $MINOR2 ]; then
+    echo true
+  elif [ $PATCH1 -gt $PATCH2 ]; then
+    echo true
+  else
+    echo false
   fi
 }
 
 createRelease() {
-  sh ./gradlew shadow
+  sh ./gradlew build
   echo "RELEASE_VERSION=$PROJECT_VERSION" >>$GITHUB_ENV
 }
 
@@ -33,6 +38,7 @@ if [ ! -e $TARGET_FILE ]; then
   fi
 fi
 
+GITHUB_REPOSITORY="TeamKun/flylib-reloaded"
 REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')
 
 PROJECT_VERSION=$(cat $TARGET_FILE | grep -m 1 "version = " | awk 'match($0, /version = "(.+)"/, groups) { print groups[1] }')
@@ -43,10 +49,11 @@ IS_RELEASEABLE=$(semanticVersionToAbstractValue $PROJECT_VERSION $REMOTE_LATEST_
 echo "Repository: $REPOSITORY_NAME"
 echo "Project Version: $PROJECT_VERSION"
 echo "Release Version: $REMOTE_LATEST_VERSION"
+echo "Can release: $IS_RELEASEABLE"
 
 if [ -z $REMOTE_LATEST_VERSION ]; then
   createRelease
-elif [ $IS_RELEASEABLE == true ]; then
+elif [ $IS_RELEASEABLE = "true" ]; then
   createRelease
 else
   exit
