@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.+', changing: true
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -73,9 +73,9 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.13'
-    embed group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.4.32"
-    embed group: "org.jetbrains.kotlin", name: "kotlin-stdlib-jdk8", version: "1.4.32"
-    embed group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: "1.4.32"
+    embed group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.5.0"
+    embed group: "org.jetbrains.kotlin", name: "kotlin-stdlib-jdk8", version: "1.5.0"
+    embed group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: "1.5.0"
 }
 
 compileKotlin {

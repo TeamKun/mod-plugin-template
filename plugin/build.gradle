@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id "com.github.johnrengelman.shadow"
     id "de.undercouch.download" version "4.1.1"
-    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.0'
 }
 
 repositories {
@@ -21,9 +21,9 @@ repositories {
 dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
 
-    implementation group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.4.32"
-    implementation group: "org.jetbrains.kotlin", name: "kotlin-stdlib-jdk8", version: "1.4.32"
-    implementation group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: "1.4.32"
+    implementation group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.5.0"
+    implementation group: "org.jetbrains.kotlin", name: "kotlin-stdlib-jdk8", version: "1.5.0"
+    implementation group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: "1.5.0"
 }
 
 processResources {
