@@ -1,10 +1,10 @@
 buildscript {
     repositories {
-        jcenter()
+        gradlePluginPortal()
     }
 
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
     }
 }
 
