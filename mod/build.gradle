@@ -95,7 +95,7 @@ jar {
         ])
     }
 
-    archiveName("${project.name}-mod-${project.version}.jar")
+    archiveName("${parent.project.name}-mod-${parent.project.version}.jar")
 
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }

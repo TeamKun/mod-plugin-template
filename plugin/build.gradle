@@ -40,7 +40,7 @@ processResources {
 tasks.build.dependsOn tasks.shadowJar
 
 shadowJar {
-    archiveName("${project.name}-plugin-${project.version}.jar")
+    archiveName("${parent.project.name}-plugin-${parent.project.version}.jar")
 }
 
 task shadow {
